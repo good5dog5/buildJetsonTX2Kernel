@@ -1,12 +1,24 @@
 #!/bin/bash
-apt-add-repository universe
-apt-get update
-apt-get install qt5-default pkg-config -y
+
+function installPkg {
+    apt-add-repository universe
+    apt-get update
+    apt-get install qt5-default pkg-config -y
+}
+if [ $(dpkg-query -W -f='${Status}' qt5-default 2>/dev/null | grep -o 'ok installed' | wc -l) -lt 2 ]; then
+    installPkg()
+fi
+
 cd /usr/src
-wget http://developer.download.nvidia.com/embedded/L4T/r28_Release_v1.0/BSP/source_release.tbz2
-tar -xvf source_release.tbz2 sources/kernel_src-tx2.tbz2
-tar -xvf sources/kernel_src-tx2.tbz2
+
+if [ ! -f "source_release.tbz2 " ]; then
+    wget http://developer.download.nvidia.com/embedded/L4T/r28_Release_v1.0/BSP/source_release.tbz2
+    tar -xvf source_release.tbz2 sources/kernel_src-tx2.tbz2
+    tar -xvf sources/kernel_src-tx2.tbz2
+fi
+
 cd kernel/kernel-4.4
+
 zcat /proc/config.gz > .config
-make xconfig
+make menuconfig
 
