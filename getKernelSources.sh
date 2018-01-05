@@ -5,7 +5,7 @@
 function installPkg {
     apt-add-repository universe
     apt-get update
-    apt-get install qt5-default pkg-config -y
+    apt-get install libncurses5-dev libncursesw5-dev qt5-default pkg-config -y
 }
 
 if [ $(dpkg-query -W -f='${Status}' qt5-default pkg-config 2>/dev/null | grep -o 'ok installed' | wc -l) -lt 2 ]; then
